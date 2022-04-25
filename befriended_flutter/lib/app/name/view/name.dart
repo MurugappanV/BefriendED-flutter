@@ -14,27 +14,27 @@ class NamePage extends StatelessWidget {
 
   void onPress(BuildContext context) {
     final name = context.read<AppCubit>().state.name;
-    if (name.isNotEmpty) {
+    if (name.trim().isNotEmpty) {
       context.read<AppCubit>().saveName();
       Navigator.pushAndRemoveUntil(
         context,
         PageRouteBuilder<Null>(
-          pageBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-          ) {
-            return AnimatedBuilder(
-              animation: animation,
-              builder: (BuildContext context, Widget? child) {
-                return Opacity(
-                  opacity: animation.value,
-                  child: const HomePage(),
-                );
-              },
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const HomePage(),
+          transitionDuration: const Duration(milliseconds: 1000),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+            const curve = Curves.ease;
+
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
             );
           },
-          transitionDuration: const Duration(milliseconds: 1000),
         ),
         (Route<dynamic> route) => false,
       );

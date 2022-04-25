@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
 class BouncingButton extends StatefulWidget {
-  const BouncingButton({Key? key, this.label, this.onPress}) : super(key: key);
+  const BouncingButton({
+    Key? key,
+    this.label,
+    this.onPress,
+    this.child,
+  }) : super(key: key);
 
   final String? label;
   final Function? onPress;
+  final Widget? child;
 
   @override
   State<BouncingButton> createState() => _BouncingButtonState();
@@ -41,7 +47,7 @@ class _BouncingButtonState extends State<BouncingButton>
         animation: _scaleController,
         builder: (context, child) => Transform.scale(
           scale: _scaleAnimation.value,
-          child: _animatedButton(),
+          child: widget.child ?? _animatedButton(),
         ),
       ),
     );

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 class MyTextField extends StatelessWidget {
-  const MyTextField(
-      {Key? key,
-      this.value,
-      this.label,
-      this.onChanged,
-      this.borderRadius,
-      this.prefixIcon,
-      this.keyboardType})
-      : super(key: key);
+  const MyTextField({
+    Key? key,
+    this.value,
+    this.label,
+    this.onChanged,
+    this.borderRadius,
+    this.prefixIcon,
+    this.keyboardType,
+    this.noOfLines,
+    this.textCapitalization,
+  }) : super(key: key);
 
   final Function(String)? onChanged; // Notice the variable type
   final String? value;
@@ -17,10 +19,14 @@ class MyTextField extends StatelessWidget {
   final BorderRadius? borderRadius;
   final Widget? prefixIcon;
   final TextInputType? keyboardType;
+  final int? noOfLines;
+  final TextCapitalization? textCapitalization;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      minLines: noOfLines,
+      maxLines: noOfLines,
       initialValue: value,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
             decorationColor: Theme.of(context).colorScheme.secondary,
@@ -51,8 +57,9 @@ class MyTextField extends StatelessWidget {
         fillColor: Theme.of(context).colorScheme.onPrimary.withOpacity(0.04),
       ),
       onChanged: onChanged,
-      textCapitalization: TextCapitalization.words,
+      textCapitalization: textCapitalization ?? TextCapitalization.words,
       keyboardType: keyboardType,
+      textInputAction: TextInputAction.done,
     );
   }
 }

@@ -8,6 +8,7 @@
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
 import 'package:befriended_flutter/app/login/cubit/login_cubit.dart';
 import 'package:befriended_flutter/app/splash/splash.dart';
+import 'package:befriended_flutter/firebase/auth_provider.dart';
 import 'package:befriended_flutter/l10n/l10n.dart';
 import 'package:befriended_flutter/local_storage/local_storage.dart';
 import 'package:befriended_flutter/theme/theme.dart';
@@ -41,7 +42,8 @@ class AppProvider extends StatelessWidget {
           create: (context) =>
               AppCubit(localStorage: context.read<LocalStorage>())
                 ..getName()
-                ..getPhoneNumber(),
+                ..getPhoneNumber()
+                ..checkLogIn(preValidation: AuthProvider().isLoggedIn()),
         ),
         BlocProvider<LoginCubit>(
           create: (context) =>

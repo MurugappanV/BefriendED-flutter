@@ -69,25 +69,41 @@ class _SplashState extends State<SplashPage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         body: SizedBox(
           width: double.infinity,
-          child: Container(
-            padding: const EdgeInsets.all(50),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: LoadingIndicator(
-                    indicatorType: Indicator.ballClipRotateMultiple,
-                    colors: [Theme.of(context).colorScheme.onPrimary],
-                    strokeWidth: 2,
-                    // backgroundColor: Colors.black,
-                    // pathBackgroundColor: Colors.black,
+          child: Stack(
+            children: [
+              const Positioned.fill(
+                child: SizedBox(),
+              ),
+              const Align(
+                child: Hero(
+                  tag: 'AppLogo',
+                  child: Image(
+                    width: 200,
+                    height: 200,
+                    image: AssetImage('assets/images/logo.png'),
                   ),
                 ),
-              ],
-            ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: 100,
+                  ),
+                  child: SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: LoadingIndicator(
+                      indicatorType: Indicator.ballClipRotateMultiple,
+                      colors: [Theme.of(context).colorScheme.onBackground],
+                      strokeWidth: 2,
+                      // backgroundColor: Colors.black,
+                      // pathBackgroundColor: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

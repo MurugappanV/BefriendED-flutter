@@ -5,6 +5,7 @@ import 'package:befriended_flutter/app/login/cubit/login_cubit.dart';
 import 'package:befriended_flutter/app/widget/bouncing_button.dart';
 import 'package:befriended_flutter/app/widget/snack_bar.dart';
 import 'package:befriended_flutter/firebase/auth_provider.dart';
+import 'package:befriended_flutter/models/user_chat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,7 +47,9 @@ class _OTPScreenState extends State<OTPScreen> {
       );
       return;
     }
-    AuthProvider().verifyOTP(smsOTP, context, (User user) {
+    AuthProvider().verifyOTP(smsOTP, context, (UserChat user) {
+      log('-------+++++ saved user +++++-----------');
+      context.read<AppCubit>().updateLocalUser(user);
       Navigator.popUntil(context, (route) {
         log('-------++++++++++-----------');
         return route.isFirst;

@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static ThemeData get light {
-    const primary = Color.fromARGB(255, 228, 241, 248);
+    const primary = Color.fromARGB(255, 235, 244, 248);
+    const onPrimary = Color(0xff1D4B7F);
     return ThemeData(
       // appBarTheme: const AppBarTheme(
       //   color: Color(0xFF13B9FF),
@@ -19,13 +20,13 @@ class AppTheme {
       colorScheme: const ColorScheme(
         brightness: Brightness.light,
         primary: primary,
-        onPrimary: Color(0xff1D4B7F),
+        onPrimary: onPrimary, //Color(0xff1D4B7F),
         secondary: Color(0xffC7E2F1),
         onSecondary: Color(0xff4C82B5),
         error: Color(0xff78C0EA),
         onError: Color(0xff000000),
         background: Color(0xff000000),
-        onBackground: Color(0xff000000),
+        onBackground: Color(0xff70CFEF),
         surface: Colors.white,
         onSurface: Colors.black87,
       ),
@@ -34,28 +35,29 @@ class AppTheme {
           fontSize: 50,
           fontWeight: FontWeight.bold,
           letterSpacing: 1,
-          color: Color(0xff1D4B7F),
+          color: onPrimary,
         ),
         titleMedium: GoogleFonts.dosis(
           fontSize: 24,
           fontWeight: FontWeight.bold,
           letterSpacing: 1,
-          color: Color(0xff1D4B7F),
+          color: onPrimary,
         ),
         bodyMedium: GoogleFonts.dosis(
           fontSize: 20,
           letterSpacing: 1,
-          color: Color(0xff1D4B7F),
+          color: onPrimary,
+          fontWeight: FontWeight.bold,
         ),
         displayMedium: GoogleFonts.dosis(
           fontSize: 20,
           letterSpacing: 1,
-          color: Color(0xff1D4B7F).withOpacity(0.9),
+          color: onPrimary.withOpacity(0.9),
         ),
         displaySmall: GoogleFonts.dosis(
           fontSize: 14,
           letterSpacing: 1,
-          color: Color(0xff1D4B7F).withOpacity(0.9),
+          color: onPrimary.withOpacity(0.9),
         ),
         // labelSmall: GoogleFonts.dosis(
         //   fontSize: 12,
@@ -65,11 +67,33 @@ class AppTheme {
         // ),
       ),
       primaryTextTheme: TextTheme(
+        titleLarge: GoogleFonts.dosis(
+          fontSize: 50,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1,
+          color: primary,
+        ),
         titleMedium: GoogleFonts.dosis(
           fontSize: 24,
           fontWeight: FontWeight.bold,
           letterSpacing: 1,
           color: primary,
+        ),
+        bodyMedium: GoogleFonts.dosis(
+          fontSize: 20,
+          letterSpacing: 1,
+          color: primary,
+          fontWeight: FontWeight.bold,
+        ),
+        displayMedium: GoogleFonts.dosis(
+          fontSize: 20,
+          letterSpacing: 1,
+          color: primary.withOpacity(0.9),
+        ),
+        displaySmall: GoogleFonts.dosis(
+          fontSize: 14,
+          letterSpacing: 1,
+          color: primary.withOpacity(0.9),
         ),
         // bodySmall: GoogleFonts.dosis(
         //   fontSize: 12,

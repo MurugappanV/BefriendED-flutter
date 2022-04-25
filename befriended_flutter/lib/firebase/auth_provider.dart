@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
 import 'package:befriended_flutter/app/widget/snack_bar.dart';
 import 'package:befriended_flutter/firebase/firestore_constants.dart';
+import 'package:befriended_flutter/models/user_chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -21,6 +22,14 @@ class AuthProvider with ChangeNotifier {
   final _firebaseAuth = FirebaseAuth.instance;
   String? verificationId;
   final _firebaseFirestore = FirebaseFirestore.instance;
+
+  bool isLoggedIn() {
+    return _firebaseAuth.currentUser?.uid != null;
+  }
+
+  Future<void> signOut() async {
+    await _firebaseAuth.signOut();
+  }
 
   Future<void> verifyPhone(
       String mobileNumber, BuildContext context, Function callBack) async {
@@ -58,7 +67,8 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  void verifyOTP(String otp, BuildContext context, Function(User) callBack) {
+  void verifyOTP(
+      String otp, BuildContext context, Function(UserChat) callBack) {
     log(verificationId ?? '');
     log(otp);
     try {
@@ -74,8 +84,10 @@ class AuthProvider with ChangeNotifier {
           log(value.user?.uid ?? '');
           log(_firebaseAuth.currentUser?.uid ?? '');
           if (value.user != null) {
-            callBack(value.user!);
-            addUser(value.user!, context);
+            addUser(value.user!, context).then((userChat) {
+              callBack(userChat);
+            });
+            // getUser(value.user!).then<void>((userChat) => callBack(userChat));
           }
         },
         onError: (dynamic e) {
@@ -91,28 +103,48 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addUser(User user, BuildContext context) async {
+  // Future<UserChat> getUser(User user) async {
+  //   final QuerySnapshot result = await _firebaseFirestore
+  //       .collection(FirestoreConstants.pathUserCollection)
+  //       .where(FirestoreConstants.id, isEqualTo: user.uid)
+  //       .get();
+  //   final List<DocumentSnapshot> documents = result.docs;
+  //   final documentSnapshot = documents[0];
+  //   final userChat = UserChat.fromDocument(documentSnapshot);
+  //   return userChat;
+  // }
+
+  Future<UserChat> addUser(User user, BuildContext context) async {
     final appState = context.read<AppCubit>().state;
     final QuerySnapshot result = await _firebaseFirestore
         .collection(FirestoreConstants.pathUserCollection)
         .where(FirestoreConstants.id, isEqualTo: user.uid)
         .get();
     final List<DocumentSnapshot> documents = result.docs;
+    final UserChat? userChat;
     if (documents.isEmpty) {
       // Writing data to server because here is a new user
+      final userData = {
+        FirestoreConstants.name: appState.name,
+        FirestoreConstants.phoneNumber: appState.phoneNumber,
+        FirestoreConstants.countryCode: appState.countryCode,
+        FirestoreConstants.id: user.uid,
+        'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
+        FirestoreConstants.chattingWith: null,
+      };
       await _firebaseFirestore
           .collection(FirestoreConstants.pathUserCollection)
           .doc(user.uid)
           .set(
-            {
-              FirestoreConstants.name: appState.name,
-              FirestoreConstants.phoneNumber: appState.phoneNumber,
-              FirestoreConstants.countryCode: appState.countryCode,
-              FirestoreConstants.id: user.uid,
-              'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
-              FirestoreConstants.chattingWith: null,
-            } as Map<String, String>,
+            userData,
           );
+
+      userChat = UserChat(
+        id: FirestoreConstants.id,
+        phoneNumber: FirestoreConstants.phoneNumber,
+        name: FirestoreConstants.name,
+        countryCode: FirestoreConstants.countryCode,
+      );
 
       // Write data to local storage
       // User? currentUser = user;
@@ -128,10 +160,18 @@ class AuthProvider with ChangeNotifier {
       // await prefs.setString(FirestoreConstants.nickname, userChat.nickname);
       // await prefs.setString(FirestoreConstants.photoUrl, userChat.photoUrl);
       // await prefs.setString(FirestoreConstants.aboutMe, userChat.aboutMe);
+      final QuerySnapshot result = await _firebaseFirestore
+          .collection(FirestoreConstants.pathUserCollection)
+          .where(FirestoreConstants.id, isEqualTo: user.uid)
+          .get();
+      final List<DocumentSnapshot> documents = result.docs;
+      final documentSnapshot = documents[0];
+      userChat = UserChat.fromDocument(documentSnapshot);
     }
     // _status = Status.authenticated;
     // notifyListeners();
     // return true;
+    return userChat;
   }
 
   void handleError(FirebaseException e, BuildContext context) {

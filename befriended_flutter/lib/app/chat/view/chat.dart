@@ -1,6 +1,11 @@
+import 'package:befriended_flutter/animations/fade_animation.dart';
+import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
 import 'package:befriended_flutter/app/login/login.dart';
 import 'package:befriended_flutter/app/widget/bouncing_button.dart';
+import 'package:befriended_flutter/app/widget/delay_sizedbox.dart';
+import 'package:befriended_flutter/app/widget/scroll_column_constraint.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ChatPage extends StatelessWidget {
@@ -31,43 +36,90 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(50),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          const SizedBox(
-            height: 50,
-          ),
-          Text(
-            'Connect with our buddy friend, for a friendly support',
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(
-            height: 50,
-          ),
-          SvgPicture.asset(
-            'assets/images/chat.svg',
-            width: 200,
-            height: 200,
-            fit: BoxFit.scaleDown,
-          ),
-          const Spacer(),
-          BouncingButton(
-            label: 'Login',
-            onPress: () {
-              Navigator.push<dynamic>(context, _createRoute());
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-            child: Text(
-              'Identity verification is needed to start the chat',
-              style: Theme.of(context).textTheme.displaySmall,
-              textAlign: TextAlign.center,
+      // child: Text('secnd Page'),
+      child: ScrollColumnConstraint(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Column(
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+                Text(
+                  'Connect with our buddy friend, for a friendly support',
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+                DealySizedBox(
+                  width: 200,
+                  height: 200,
+                  child: SvgPicture.asset(
+                    'assets/images/chat.svg',
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.scaleDown,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+            // const Spacer(),
+            BlocBuilder<AppCubit, AppState>(
+              builder: (context, state) {
+                if (state.isLoggedIn) {
+                  return Column(
+                    children: [
+                      BouncingButton(
+                        label: 'Start chat',
+                        onPress: () {
+                          // Navigator.push<dynamic>(context, _createRoute());
+                        },
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 20, left: 20, right: 20),
+                          child: Text(
+                            'No previous messages found',
+                            style: Theme.of(context).textTheme.displaySmall,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return Column(
+                  children: [
+                    BouncingButton(
+                      label: 'Login',
+                      onPress: () {
+                        Navigator.push<dynamic>(context, _createRoute());
+                      },
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.only(top: 20, left: 20, right: 20),
+                        child: Text(
+                          'Identity verification is needed to start the chat',
+                          style: Theme.of(context).textTheme.displaySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

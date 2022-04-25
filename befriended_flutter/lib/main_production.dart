@@ -7,11 +7,13 @@
 
 import 'package:befriended_flutter/bootstrap.dart';
 import 'package:befriended_flutter/local_storage/local_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_services_binding/flutter_services_binding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async {
+Future<void> main() async {
   FlutterServicesBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   final localStorage = LocalStorage(
     plugin: await SharedPreferences.getInstance(),

@@ -51,7 +51,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.befriended.org.befriended_flutter"
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -90,8 +90,8 @@ android {
         }
         staging {
             dimension "default"
-            applicationIdSuffix ".stg"
-            manifestPlaceholders = [appName: "[STG] Befriended Flutter"]
+            applicationIdSuffix ""
+            manifestPlaceholders = [appName: "Befriended"]
         }        
         development {
             dimension "default"

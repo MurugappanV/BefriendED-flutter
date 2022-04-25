@@ -11,6 +11,7 @@ class AppState extends Equatable {
     this.phoneNumber = '',
     this.countryCode = '',
     this.phoneNumberStatus = PhoneNumberStatus.initial,
+    this.isLoggedIn = false,
   });
 
   final String name;
@@ -18,6 +19,7 @@ class AppState extends Equatable {
   final String phoneNumber;
   final String countryCode;
   final PhoneNumberStatus phoneNumberStatus;
+  final bool isLoggedIn;
 
   AppState copyWith({
     String? name,
@@ -25,6 +27,7 @@ class AppState extends Equatable {
     String? phoneNumber,
     String? countryCode,
     PhoneNumberStatus? phoneNumberStatus,
+    bool? isLoggedIn,
   }) {
     return AppState(
       name: name ?? this.name,
@@ -32,10 +35,17 @@ class AppState extends Equatable {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       countryCode: countryCode ?? this.countryCode,
       phoneNumberStatus: phoneNumberStatus ?? this.phoneNumberStatus,
+      isLoggedIn: isLoggedIn ?? this.isLoggedIn,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [name, nameStatus, phoneNumber, countryCode, phoneNumberStatus];
+  List<Object?> get props => [
+        name,
+        nameStatus,
+        phoneNumber,
+        countryCode,
+        phoneNumberStatus,
+        isLoggedIn,
+      ];
 }

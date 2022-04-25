@@ -5,6 +5,7 @@ import 'package:befriended_flutter/app/widget/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class CountryPickerWidget extends StatelessWidget {
   const CountryPickerWidget({
@@ -29,9 +30,8 @@ class CountryPicker extends StatefulWidget {
 }
 
 // Country picker state class
-class _CountryPickerState extends State<CountryPicker>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+class _CountryPickerState extends State<CountryPicker> {
+  // late AnimationController _controller;
   @override
   void initState() {
     super.initState();
@@ -44,17 +44,17 @@ class _CountryPickerState extends State<CountryPicker>
     });
     // BottomSheet.createAnimationController(this);
     // _controller.duration = Duration(seconds: 2);
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 2),
-      reverseDuration: Duration(milliseconds: 300),
-      animationBehavior: AnimationBehavior.preserve,
-    );
+    // _controller = AnimationController(
+    //   vsync: this,
+    //   duration: Duration(seconds: 2),
+    //   reverseDuration: Duration(milliseconds: 300),
+    //   animationBehavior: AnimationBehavior.preserve,
+    // );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    // _controller.dispose();
     super.dispose();
   }
 
@@ -81,17 +81,15 @@ class _CountryPickerState extends State<CountryPicker>
                 return SizedBox(
                   child: GestureDetector(
                     onTap: () {
-                      showModalBottomSheet<CountryModel>(
+                      CupertinoScaffold.showCupertinoModalBottomSheet<
+                          CountryModel>(
                         context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        transitionAnimationController: _controller,
                         builder: (context) {
                           return CustomDialog(
                             searchList: state.countryList ?? [],
                           );
                         },
-                        enableDrag: false,
+                        duration: Duration(milliseconds: 500),
                       ).then((selectedCountry) {
                         if (selectedCountry != null) {
                           context
@@ -102,6 +100,27 @@ class _CountryPickerState extends State<CountryPicker>
                               .countryCodeChanged(selectedCountry.dialCode);
                         }
                       });
+                      // showModalBottomSheet<CountryModel>(
+                      //   context: context,
+                      //   isScrollControlled: true,
+                      //   backgroundColor: Colors.transparent,
+                      //   transitionAnimationController: _controller,
+                      //   builder: (context) {
+                      //     return CustomDialog(
+                      //       searchList: state.countryList ?? [],
+                      //     );
+                      //   },
+                      //   enableDrag: false,
+                      // ).then((selectedCountry) {
+                      //   if (selectedCountry != null) {
+                      //     context
+                      //         .read<CountryPickerCubit>()
+                      //         .selectedCountryDataChanged(selectedCountry);
+                      //     context
+                      //         .read<AppCubit>()
+                      //         .countryCodeChanged(selectedCountry.dialCode);
+                      //   }
+                      // });
                     },
                     child: Container(
                       padding:
@@ -180,7 +199,7 @@ class _CustomDialogState extends State<CustomDialog> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.75,
+      height: MediaQuery.of(context).size.height * 0.70,
       padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
@@ -189,94 +208,118 @@ class _CustomDialogState extends State<CustomDialog> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Container(
-          //   margin: const EdgeInsets.all(8),
-          // height: 45,
-          // decoration: BoxDecoration(
-          //   color: const Color.fromARGB(8, 0, 0, 0),
-          //   borderRadius: BorderRadius.circular(36),
-          // ),
-          // child:
-          MyTextField(
-            label: 'Search Country',
-            prefixIcon: Icon(
-              Icons.search,
-              size: 25,
-              color: Theme.of(context).colorScheme.onSecondary,
+      child: Card(
+        color: Colors.transparent,
+        elevation: 0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MyTextField(
+              label: 'Search Country',
+              prefixIcon: Icon(
+                Icons.search,
+                size: 25,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+              onChanged: filterData,
             ),
-            // decoration: const InputDecoration(
-            //   hintText: 'Search Country',
-            //   border: InputBorder.none,
-            //   enabledBorder: InputBorder.none,
-            //   focusedBorder: InputBorder.none,
-            //   contentPadding:
-            //       EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            //   prefixIcon: Icon(
-            //     Icons.search,
-            //     size: 18,
-            //     color: Colors.black38,
-            //   ),
-            // ),
-            onChanged: filterData,
-          ),
-          // ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  // ignore: sdk_version_ui_as_code
-                  ...tmpList.map(
-                    (item) => GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context, item);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 20,
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.70 - 108,
+              child: ListView.builder(
+                shrinkWrap: true,
+                controller: ModalScrollController.of(context),
+                physics: ClampingScrollPhysics(),
+                itemCount: tmpList.length,
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context, tmpList[index]);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 20,
+                    ),
+                    child: Row(
+                      // ignore: prefer_const_literals_to_create_immutables
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 5),
+                          child: Text(
+                            tmpList[index].flag,
+                            style: const TextStyle(fontSize: 16),
+                          ),
                         ),
-                        child: Row(
-                          // ignore: prefer_const_literals_to_create_immutables
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 5),
-                              child: Text(
-                                item.flag,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 12,
-                            ),
-                            Expanded(
-                              child: Text(
-                                item.name,
-                                style:
-                                    Theme.of(context).textTheme.displayMedium,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 12,
-                            ),
-                            Text(
-                              item.dialCode,
-                              style: Theme.of(context).textTheme.displayMedium,
-                            ),
-                          ],
+                        const SizedBox(
+                          width: 12,
                         ),
-                      ),
+                        Expanded(
+                          child: Text(
+                            tmpList[index].name,
+                            style: Theme.of(context).textTheme.displayMedium,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        Text(
+                          tmpList[index].dialCode,
+                          style: Theme.of(context).textTheme.displayMedium,
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
+                // children: [
+                //   // ignore: sdk_version_ui_as_code
+                //   ...tmpList.map(
+                //     (item) => GestureDetector(
+                //       onTap: () {
+                //         Navigator.pop(context, item);
+                //       },
+                //       child: Padding(
+                //         padding: const EdgeInsets.symmetric(
+                //           horizontal: 16,
+                //           vertical: 20,
+                //         ),
+                //         child: Row(
+                //           // ignore: prefer_const_literals_to_create_immutables
+                //           crossAxisAlignment: CrossAxisAlignment.start,
+                //           children: [
+                //             Padding(
+                //               padding: EdgeInsets.only(top: 5),
+                //               child: Text(
+                //                 item.flag,
+                //                 style: const TextStyle(fontSize: 16),
+                //               ),
+                //             ),
+                //             const SizedBox(
+                //               width: 12,
+                //             ),
+                //             Expanded(
+                //               child: Text(
+                //                 item.name,
+                //                 style:
+                //                     Theme.of(context).textTheme.displayMedium,
+                //               ),
+                //             ),
+                //             const SizedBox(
+                //               width: 12,
+                //             ),
+                //             Text(
+                //               item.dialCode,
+                //               style: Theme.of(context).textTheme.displayMedium,
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

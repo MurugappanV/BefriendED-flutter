@@ -1,17 +1,14 @@
 import 'dart:developer';
 
-import 'package:befriended_flutter/animations/slide_transition.dart';
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
 import 'package:befriended_flutter/app/country_picker/country_picker.dart';
-import 'package:befriended_flutter/app/login/cubit/login_cubit.dart';
-import 'package:befriended_flutter/firebase/auth_provider.dart';
 import 'package:befriended_flutter/app/login/view/otp.dart';
 import 'package:befriended_flutter/app/widget/bouncing_button.dart';
-import 'package:befriended_flutter/app/widget/snack_bar.dart';
 import 'package:befriended_flutter/app/widget/text_field.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:befriended_flutter/firebase/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -94,84 +91,86 @@ class _LoginScreenState extends State<LoginScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SizedBox(
-        width: double.infinity,
-        child: Container(
-          padding: const EdgeInsets.all(50),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(flex: 1),
-              Hero(
-                tag: 'PhoneVerification',
-                child: Text(
-                  'Phone Verification',
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              SlideTransition(
-                position: _scaleAnimation,
-                child: Text(
-                  'OTP will be asked in the next page',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              const Spacer(flex: 1),
-              SlideTransition(
-                position: _scaleAnimation,
-                child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-                  child: Row(
-                    // ignore: prefer_const_literals_to_create_immutables
-                    children: [
-                      CountryPickerWidget(),
-                      Expanded(
-                        child: BlocBuilder<AppCubit, AppState>(
-                          builder: (context, state) {
-                            return MyTextField(
-                              label: 'Phone Number',
-                              value: state.phoneNumber,
-                              onChanged: (value) {
-                                context
-                                    .read<AppCubit>()
-                                    .phoneNumberChanged(value);
-                              },
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(10),
-                                bottomRight: Radius.circular(10),
-                              ),
-                              keyboardType: TextInputType.number,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+      body: CupertinoScaffold(
+        body: SizedBox(
+          width: double.infinity,
+          child: Container(
+            padding: const EdgeInsets.all(50),
+            color: Theme.of(context).colorScheme.primary,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Spacer(flex: 1),
+                Hero(
+                  tag: 'PhoneVerification',
+                  child: Text(
+                    'Phone Verification',
+                    style: Theme.of(context).textTheme.titleLarge,
+                    textAlign: TextAlign.left,
                   ),
                 ),
-              ),
-              const Spacer(flex: 7),
-              Hero(
-                tag: 'PhoneVerificationButton',
-                child: BouncingButton(
-                  label: 'Send OTP',
-                  onPress: () {
-                    generateOtp();
-                  },
+                const SizedBox(
+                  height: 30,
                 ),
-              ),
-              const Spacer(flex: 1),
-            ],
+                SlideTransition(
+                  position: _scaleAnimation,
+                  child: Text(
+                    'OTP will be asked in the next page',
+                    style: Theme.of(context).textTheme.titleMedium,
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                const Spacer(flex: 1),
+                SlideTransition(
+                  position: _scaleAnimation,
+                  child: Container(
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+                    child: Row(
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        CountryPickerWidget(),
+                        Expanded(
+                          child: BlocBuilder<AppCubit, AppState>(
+                            builder: (context, state) {
+                              return MyTextField(
+                                label: 'Phone Number',
+                                value: state.phoneNumber,
+                                onChanged: (value) {
+                                  context
+                                      .read<AppCubit>()
+                                      .phoneNumberChanged(value);
+                                },
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
+                                ),
+                                keyboardType: TextInputType.number,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const Spacer(flex: 7),
+                Hero(
+                  tag: 'PhoneVerificationButton',
+                  child: BouncingButton(
+                    label: 'Send OTP',
+                    onPress: () {
+                      generateOtp();
+                    },
+                  ),
+                ),
+                const Spacer(flex: 1),
+              ],
+            ),
           ),
         ),
       ),

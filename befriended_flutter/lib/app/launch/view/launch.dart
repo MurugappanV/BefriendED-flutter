@@ -11,55 +11,62 @@ class LaunchPage extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SizedBox(
         width: double.infinity,
-        child: Stack(
-          children: <Widget>[
-            overlayImage(context, 1000, -50),
-            overlayImage(context, 1200, -100),
-            overlayImage(context, 1400, -150),
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  FadeUpAnimation(
-                    delay: 1600,
-                    child: Hero(
-                      tag: 'BefriendEDTitle',
-                      child: Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 0, 5, 0),
-                        child: Text(
-                          'BefriendED',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0, 100, 0, 0),
+                child: Hero(
+                  tag: 'AppLogo',
+                  child: Image(
+                    width: 200,
+                    height: 200,
+                    image: AssetImage('assets/images/logo.png'),
+                  ),
+                ),
+              ),
+              FadeUpAnimation(
+                delay: 700,
+                child: Align(
+                  child: Hero(
+                    tag: 'BefriendEDTitle',
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 5, 0),
+                      child: Text(
+                        'BefriendED',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onBackground,
+                            ),
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  FadeUpAnimation(
-                    delay: 2100,
-                    child: Text(
-                      'we are always here for you!!',
-                      style: Theme.of(context).textTheme.displayMedium,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 140,
-                  ),
-                  const FadeUpAnimation(
-                    delay: 2300,
-                    child: ArrowButton(),
-                  ),
-                  const SizedBox(
-                    height: 60,
-                  ),
-                ],
+                ),
               ),
-            )
-          ],
+              const SizedBox(
+                height: 15,
+              ),
+              FadeUpAnimation(
+                delay: 900,
+                child: Align(
+                  child: Text(
+                    'we are always here for you!!',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              const FadeUpAnimation(
+                delay: 1500,
+                child: ArrowButton(),
+              ),
+              const SizedBox(
+                height: 60,
+              ),
+            ],
+          ),
         ),
       ),
     );
