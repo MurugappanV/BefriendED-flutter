@@ -1,4 +1,5 @@
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
+import 'package:befriended_flutter/app/constants/RouteConstants.dart';
 import 'package:befriended_flutter/app/home/home.dart';
 import 'package:befriended_flutter/app/launch/launch.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,9 @@ class _SplashState extends State<SplashPage> {
     Navigator.pushAndRemoveUntil(
       context,
       PageRouteBuilder<Null>(
+        settings: RouteSettings(
+            name:
+                name.isNotEmpty ? RouteConstants.home : RouteConstants.launch),
         pageBuilder: (
           BuildContext context,
           Animation<double> animation,

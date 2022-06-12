@@ -1,10 +1,12 @@
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
+import 'package:befriended_flutter/app/availability_schedule/cubit/availability_schedule_cubit.dart';
 import 'package:befriended_flutter/app/availability_schedule/view/availability_schedule.dart';
 import 'package:befriended_flutter/app/login/login.dart';
 import 'package:befriended_flutter/app/setting/view/sign_out.dart';
 import 'package:befriended_flutter/app/widget/bouncing_button.dart';
 import 'package:befriended_flutter/app/widget/delay_sizedbox.dart';
 import 'package:befriended_flutter/app/widget/scroll_column_constraint.dart';
+import 'package:befriended_flutter/app/widget/snack_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -89,22 +91,32 @@ class SettingsPage extends StatelessWidget {
                   padding: EdgeInsetsDirectional.fromSTEB(30, 40, 30, 0),
                   child: BouncingButton(
                     onPress: () {
-                      // Navigator.push<dynamic>(context, _createRoute());
-                      CupertinoScaffold.showCupertinoModalBottomSheet<String>(
-                        context: context,
-                        expand: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) {
-                          return AvailabilitySchedule();
-                        },
-                        shadow: BoxShadow(
-                          color: Colors.transparent,
-                          blurRadius: 0,
-                          spreadRadius: 0,
-                          offset: Offset(0, 0),
-                        ),
-                        // duration: Duration(milliseconds: 500),
-                      );
+                      if (!context.read<AppCubit>().state.isLoggedIn) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          singleLineSnackBar(context, 'Please login!'),
+                        );
+                      } else {
+                        CupertinoScaffold.showCupertinoModalBottomSheet<String>(
+                          context: context,
+                          expand: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) {
+                            return AvailabilitySchedule();
+                          },
+                          shadow: BoxShadow(
+                            color: Colors.transparent,
+                            blurRadius: 0,
+                            spreadRadius: 0,
+                            offset: Offset(0, 0),
+                          ),
+                          // duration: Duration(milliseconds: 500),
+                        ).then((value) {
+                          // TODO handle error on save
+                          context
+                              .read<AvialabiliyScheduleCubit>()
+                              .saveAvailability();
+                        });
+                      }
                     },
                     child: Container(
                       // margin: const EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
@@ -250,9 +262,7 @@ class SettingsPage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(30, 40, 30, 0),
                   child: BouncingButton(
-                    onPress: () {
-                      // Navigator.push<dynamic>(context, _createRoute());
-                    },
+                    onPress: () {},
                     child: Container(
                       // margin: const EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
                       padding:
@@ -327,9 +337,7 @@ class SettingsPage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: BouncingButton(
-                          onPress: () {
-                            // Navigator.push<dynamic>(context, _createRoute());
-                          },
+                          onPress: () {},
                           child: Container(
                             height: 100,
                             // margin: const EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
@@ -374,7 +382,6 @@ class SettingsPage extends StatelessWidget {
                       Expanded(
                         child: BouncingButton(
                           onPress: () {
-                            // Navigator.push<dynamic>(context, _createRoute());
                             CupertinoScaffold.showCupertinoModalBottomSheet<
                                 String>(
                               context: context,

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:befriended_flutter/app/constants/RouteConstants.dart';
 import 'package:befriended_flutter/app/name/name.dart';
 import 'package:flutter/material.dart';
 
@@ -75,6 +76,7 @@ class _ArrowButtonState extends State<ArrowButton>
               Navigator.push(
                 context,
                 PageRouteBuilder<Null>(
+                  settings: const RouteSettings(name: RouteConstants.name),
                   pageBuilder: (
                     BuildContext context,
                     Animation<double> animation,
@@ -114,11 +116,6 @@ class _ArrowButtonState extends State<ArrowButton>
         Tween<double>(begin: 1, end: 32).animate(_scale2Controller);
     // ..addStatusListener((status) {
     //   if (status == AnimationStatus.completed) {
-    //     Navigator.pushNamedAndRemoveUntil(
-    //       context,
-    //       '/namepage',
-    //       (route) => false,
-    //     );
     //   }
     // });
 

@@ -6,15 +6,22 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
+import 'package:befriended_flutter/app/availability_schedule/availability_schedule.dart';
+import 'package:befriended_flutter/app/availability_schedule/cubit/availability_schedule_cubit.dart';
+import 'package:befriended_flutter/app/buddy_request/cubit/cubit.dart';
 import 'package:befriended_flutter/app/login/cubit/login_cubit.dart';
+import 'package:befriended_flutter/app/name/name.dart';
 import 'package:befriended_flutter/app/splash/splash.dart';
-import 'package:befriended_flutter/firebase/auth_provider.dart';
+import 'package:befriended_flutter/app/support/cubit/cubit.dart';
+import 'package:befriended_flutter/firebase/firebase_provider.dart';
 import 'package:befriended_flutter/l10n/l10n.dart';
 import 'package:befriended_flutter/local_storage/local_storage.dart';
 import 'package:befriended_flutter/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+// when logged in calll many items to register
 
 class App extends StatelessWidget {
   const App({Key? key, required this.localStorage}) : super(key: key);
@@ -43,11 +50,20 @@ class AppProvider extends StatelessWidget {
               AppCubit(localStorage: context.read<LocalStorage>())
                 ..getName()
                 ..getPhoneNumber()
-                ..checkLogIn(preValidation: AuthProvider().isLoggedIn()),
+                ..checkLogIn(preValidation: FirebaseProvider().isLoggedIn()),
         ),
         BlocProvider<LoginCubit>(
           create: (context) =>
               LoginCubit(localStorage: context.read<LocalStorage>()),
+        ),
+        BlocProvider<AvialabiliyScheduleCubit>(
+          create: (context) => AvialabiliyScheduleCubit(),
+        ),
+        BlocProvider<SupportCubit>(
+          create: (context) => SupportCubit()..getRequest(),
+        ),
+        BlocProvider<RequestBuddyCubit>(
+          create: (context) => RequestBuddyCubit()..getBuddyRequest(),
         ),
       ],
       child: const AppView(),
@@ -76,6 +92,7 @@ class AppView extends StatelessWidget {
     return MaterialApp(
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.light,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -119,5 +136,4 @@ class AppView extends StatelessWidget {
 //             supportedLocales: AppLocalizations.supportedLocales,
 //             home: const CounterPage(),
 //           )
-//         : 
-        
+//         :

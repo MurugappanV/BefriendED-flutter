@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
+import 'package:befriended_flutter/app/constants/RouteConstants.dart';
+import 'package:befriended_flutter/app/home/home.dart';
 import 'package:befriended_flutter/app/login/cubit/login_cubit.dart';
 import 'package:befriended_flutter/app/widget/bouncing_button.dart';
 import 'package:befriended_flutter/app/widget/snack_bar.dart';
-import 'package:befriended_flutter/firebase/auth_provider.dart';
+import 'package:befriended_flutter/firebase/firebase_provider.dart';
 import 'package:befriended_flutter/models/user_chat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -47,13 +49,32 @@ class _OTPScreenState extends State<OTPScreen> {
       );
       return;
     }
-    AuthProvider().verifyOTP(smsOTP, context, (UserChat user) {
+    FirebaseProvider().verifyOTP(smsOTP, context, (UserChat user) {
       log('-------+++++ saved user +++++-----------');
       context.read<AppCubit>().updateLocalUser(user);
-      Navigator.popUntil(context, (route) {
-        log('-------++++++++++-----------');
-        return route.isFirst;
-      });
+      Navigator.pushAndRemoveUntil(
+        context,
+        PageRouteBuilder<Null>(
+          settings: const RouteSettings(name: RouteConstants.home),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const HomePage(),
+          transitionDuration: const Duration(milliseconds: 1000),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+            const curve = Curves.ease;
+
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        ),
+        (Route<dynamic> route) => false,
+      );
     });
   }
 

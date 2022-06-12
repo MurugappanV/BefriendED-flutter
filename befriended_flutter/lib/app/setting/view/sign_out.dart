@@ -1,8 +1,9 @@
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
+import 'package:befriended_flutter/app/constants/RouteConstants.dart';
 import 'package:befriended_flutter/app/home/home.dart';
 import 'package:befriended_flutter/app/launch/launch.dart';
 import 'package:befriended_flutter/app/name/name.dart';
-import 'package:befriended_flutter/firebase/auth_provider.dart';
+import 'package:befriended_flutter/firebase/firebase_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -66,12 +67,13 @@ class _SignOutState extends State<SignOut> {
               iconData: Icons.logout_rounded,
               onPress: () {
                 if (context.read<AppCubit>().state.isLoggedIn) {
-                  AuthProvider().signOut();
+                  FirebaseProvider().signOut();
                 }
                 context.read<AppCubit>().clearLocalUser();
                 Navigator.pushAndRemoveUntil(
                   context,
                   PageRouteBuilder<Null>(
+                    settings: const RouteSettings(name: RouteConstants.launch),
                     pageBuilder: (context, animation, secondaryAnimation) =>
                         const LaunchPage(),
                     transitionDuration: const Duration(milliseconds: 500),

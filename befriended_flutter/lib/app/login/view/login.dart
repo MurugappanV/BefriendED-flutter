@@ -1,11 +1,12 @@
 import 'dart:developer';
 
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
+import 'package:befriended_flutter/app/constants/RouteConstants.dart';
 import 'package:befriended_flutter/app/country_picker/country_picker.dart';
 import 'package:befriended_flutter/app/login/view/otp.dart';
 import 'package:befriended_flutter/app/widget/bouncing_button.dart';
 import 'package:befriended_flutter/app/widget/text_field.dart';
-import 'package:befriended_flutter/firebase/auth_provider.dart';
+import 'package:befriended_flutter/firebase/firebase_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -47,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen>
       context,
       // MySlideTransition(oldScreen: widget, newScreen: const OTPScreen()),
       PageRouteBuilder<Null>(
+        settings: const RouteSettings(name: RouteConstants.otp),
         pageBuilder: (
           BuildContext context,
           Animation<double> animation,
@@ -83,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen>
     final state = context.read<AppCubit>().state;
     final contact = state.countryCode + state.phoneNumber;
 
-    AuthProvider().verifyPhone(contact, context, navigateToOTP);
+    FirebaseProvider().verifyPhone(contact, context, navigateToOTP);
   }
 
   //build method for UI Representation

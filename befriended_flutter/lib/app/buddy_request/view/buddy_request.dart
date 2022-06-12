@@ -1,18 +1,23 @@
+import 'package:befriended_flutter/animations/fade_animation.dart';
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
 import 'package:befriended_flutter/app/availability_schedule/availability_schedule.dart';
+import 'package:befriended_flutter/app/availability_schedule/view/schedule_selectoion.dart';
+import 'package:befriended_flutter/app/buddy_request/cubit/cubit.dart';
+import 'package:befriended_flutter/app/buddy_request/cubit/request_buddy.dart';
 import 'package:befriended_flutter/app/home/home.dart';
 import 'package:befriended_flutter/app/launch/launch.dart';
 import 'package:befriended_flutter/app/name/name.dart';
-import 'package:befriended_flutter/app/support/cubit/cubit.dart';
 import 'package:befriended_flutter/app/widget/bouncing_button.dart';
+import 'package:befriended_flutter/app/widget/delay_sizedbox.dart';
 import 'package:befriended_flutter/app/widget/text_field.dart';
 import 'package:befriended_flutter/firebase/firebase_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class SupportRequest extends StatefulWidget {
-  const SupportRequest({
+class BuddyRequest extends StatefulWidget {
+  const BuddyRequest({
     Key? key,
     // required this.selectedPage,
     // required this.onTapped,
@@ -22,10 +27,10 @@ class SupportRequest extends StatefulWidget {
   // final Function(HomePageStatus, int) onTapped;
 
   @override
-  State<SupportRequest> createState() => _SupportRequestState();
+  State<BuddyRequest> createState() => _BuddyRequestState();
 }
 
-class _SupportRequestState extends State<SupportRequest> {
+class _BuddyRequestState extends State<BuddyRequest> {
   @override
   void initState() {
     super.initState();
@@ -35,7 +40,7 @@ class _SupportRequestState extends State<SupportRequest> {
   Widget build(BuildContext context) {
     return Container(
       // height: MediaQuery.of(context).size.height * 0.70,
-      padding: const EdgeInsetsDirectional.fromSTEB(25, 50, 20, 70),
+      padding: const EdgeInsetsDirectional.fromSTEB(25, 25, 20, 0),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.only(
@@ -59,27 +64,29 @@ class _SupportRequestState extends State<SupportRequest> {
                   color: Theme.of(context).colorScheme.onPrimary,
                   size: 30,
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                },
               ),
             ),
             const SizedBox(
               height: 10,
             ),
             Text(
-              'Our team will contact you soon after getting this request!',
+              'Befriended will match you with suitable buddy mentor',
               style: Theme.of(context).textTheme.titleMedium,
               textAlign: TextAlign.left,
             ),
             const SizedBox(
               height: 30,
             ),
-            BlocBuilder<SupportCubit, SupportState>(
+            BlocBuilder<RequestBuddyCubit, RequestBuddyState>(
               builder: (context, state) {
                 return MyTextField(
-                  label: 'Hey buddy! Tell us about how you wish to support',
+                  label: 'Tell about yourself',
                   value: state.requestDesc,
                   onChanged: (value) {
-                    context.read<SupportCubit>().requestDescChanged(value);
+                    context.read<RequestBuddyCubit>().requestDescChanged(value);
                   },
                   noOfLines: 5,
                 );
@@ -100,6 +107,74 @@ class _SupportRequestState extends State<SupportRequest> {
             ),
             const SizedBox(
               height: 30,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: Text(
+                'Eating Disorder Type',
+                style: Theme.of(context)
+                    .textTheme
+                    .displaySmall
+                    ?.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            GestureDetector(
+              onTap: () {
+                showCupertinoModalBottomSheet<EDType>(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  shadow: BoxShadow(
+                    color: Colors.transparent,
+                    blurRadius: 0,
+                    spreadRadius: 0,
+                    offset: Offset(0, 0),
+                  ),
+                  builder: (context) {
+                    return CustomDialog();
+                  },
+                  duration: Duration(milliseconds: 500),
+                ).then((eDType) {
+                  if (eDType != null) {
+                    context
+                        .read<RequestBuddyCubit>()
+                        .requestEDTypeChanged(eDType);
+                    // context
+                    //     .read<AppCubit>()
+                    //     .countryCodeChanged(selectedTimezone.);
+                  }
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.only(
+                  top: 25,
+                  left: 20,
+                  bottom: 25,
+                ),
+                decoration: BoxDecoration(
+                  color:
+                      Theme.of(context).colorScheme.onPrimary.withOpacity(0.04),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    bottomLeft: Radius.circular(10),
+                  ),
+                ),
+                child: BlocBuilder<RequestBuddyCubit, RequestBuddyState>(
+                  builder: (context, state) {
+                    return Text(
+                      state.requestEdType.value,
+                      style: Theme.of(context).textTheme.displayMedium,
+                      textAlign: TextAlign.left,
+                    );
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 50,
             ),
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
@@ -173,45 +248,76 @@ class _SupportRequestState extends State<SupportRequest> {
             BouncingButton(
               label: 'Send Request',
               onPress: () {
-                // TODO handle error
-                // TODO feedback message
-                context.read<SupportCubit>().submitRequest();
+                context.read<RequestBuddyCubit>().submitBuddyRequest();
                 Navigator.pop(context);
               },
+            ),
+            const SizedBox(
+              height: 30,
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget buildMenu({
-    required String text,
-    required IconData iconData,
-    required Function() onPress,
-  }) {
-    return InkWell(
-      onTap: onPress,
-      child: Row(
-        children: [
-          Container(
-            margin: EdgeInsets.only(right: 15),
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
-              borderRadius: BorderRadius.all(Radius.circular(40)),
-            ),
-            child: Icon(
-              iconData,
-              color: Theme.of(context).colorScheme.onPrimary,
+class CustomDialog extends StatefulWidget {
+  const CustomDialog({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<CustomDialog> createState() => _CustomDialogState();
+}
+
+// dialogue state class
+class _CustomDialogState extends State<CustomDialog> {
+  List<EDType> tmpList = [];
+
+  // initiation of state
+  @override
+  void initState() {
+    super.initState();
+    tmpList = EDType.values;
+  }
+
+  // build method
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(40),
+          topRight: Radius.circular(40),
+        ),
+      ),
+      child: Card(
+        color: Colors.transparent,
+        elevation: 0,
+        child: ListView.builder(
+          shrinkWrap: true,
+          controller: ModalScrollController.of(context),
+          physics: ClampingScrollPhysics(),
+          itemCount: tmpList.length,
+          itemBuilder: (context, index) => GestureDetector(
+            onTap: () {
+              Navigator.pop(context, tmpList[index]);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 20,
+              ),
+              child: Text(
+                tmpList[index].value,
+                style: Theme.of(context).textTheme.displayMedium,
+              ),
             ),
           ),
-          Text(
-            text,
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
-        ],
+        ),
       ),
     );
   }

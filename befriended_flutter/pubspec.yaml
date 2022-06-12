@@ -45,6 +45,7 @@ flutter:
   assets:
     - assets/images/
     - assets/countrycodes.json
+    - assets/timezones.json
 
 flutter_icons:
   android: true

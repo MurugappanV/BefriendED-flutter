@@ -1,4 +1,8 @@
+import 'package:befriended_flutter/app/buddy_request/buddy_request.dart';
+import 'package:befriended_flutter/app/buddy_request/cubit/cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class CommonMenu extends StatefulWidget {
   const CommonMenu({
@@ -39,10 +43,34 @@ class _CommonMenuState extends State<CommonMenu> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            buildMenu(
-              text: 'Connect with a buddy',
-              iconData: Icons.link_rounded,
-              onPress: () {},
+            BlocBuilder<RequestBuddyCubit, RequestBuddyState>(
+              builder: (context, state) {
+                return buildMenu(
+                  text: state.requestData?.matchedUserId == null
+                      ? 'Connect with a buddy'
+                      : 'Talk to your buddy',
+                  iconData: Icons.link_rounded,
+                  onPress: () {
+                    if (state.requestData?.matchedUserId == null) {
+                      showCupertinoModalBottomSheet<String>(
+                        context: context,
+                        expand: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) {
+                          return BuddyRequest();
+                        },
+                        shadow: BoxShadow(
+                          color: Colors.transparent,
+                          blurRadius: 0,
+                          spreadRadius: 0,
+                          offset: Offset(0, 0),
+                        ),
+                        // duration: Duration(milliseconds: 500),
+                      );
+                    }
+                  },
+                );
+              },
             ),
             const SizedBox(
               height: 50,
@@ -61,31 +89,34 @@ class _CommonMenuState extends State<CommonMenu> {
   Widget buildMenu({
     required String text,
     required IconData iconData,
-    required Function onPress,
+    required Function() onPress,
   }) {
-    return Row(
-      children: [
-        Container(
-          margin: EdgeInsets.only(right: 15),
-          // padding: EdgeInsets.all(2),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondary,
-            borderRadius: BorderRadius.all(Radius.circular(40)),
-          ),
-          child: IconButton(
-            icon: Icon(
-              iconData,
-              color: Theme.of(context).colorScheme.onPrimary,
+    return InkWell(
+      onTap: onPress,
+      child: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            // padding: EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondary,
+              borderRadius: BorderRadius.all(Radius.circular(40)),
             ),
-            onPressed: () {},
+            child: IconButton(
+              icon: Icon(
+                iconData,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+              onPressed: () {},
+            ),
           ),
-        ),
-        Text(
-          text,
-          style: Theme.of(context).textTheme.titleMedium,
-          textAlign: TextAlign.center,
-        ),
-      ],
+          Text(
+            text,
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }

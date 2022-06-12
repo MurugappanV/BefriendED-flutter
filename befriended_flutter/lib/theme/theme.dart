@@ -43,6 +43,12 @@ class AppTheme {
           letterSpacing: 1,
           color: onPrimary,
         ),
+        titleSmall: GoogleFonts.dosis(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1,
+          color: onPrimary,
+        ),
         bodyMedium: GoogleFonts.dosis(
           fontSize: 20,
           letterSpacing: 1,
