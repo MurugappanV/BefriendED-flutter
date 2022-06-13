@@ -21,7 +21,7 @@ class _SplashState extends State<SplashPage> {
     super.initState();
     final appState = context.read<AppCubit>().state;
     if (appState.nameStatus == NameStatus.success) {
-      SchedulerBinding.instance?.addPostFrameCallback(
+      SchedulerBinding.instance.addPostFrameCallback(
         (_) {
           navigateNextPage(appState.name);
         },

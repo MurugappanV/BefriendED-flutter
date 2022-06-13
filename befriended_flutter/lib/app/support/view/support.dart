@@ -200,7 +200,9 @@ class SupportPage extends StatelessWidget {
                   children: <Widget>[
                     BouncingButton(
                       label: 'Login',
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.push<dynamic>(context, _createRoute());
+                      },
                     ),
                     Padding(
                       padding:
@@ -319,7 +321,7 @@ class SupportPage extends StatelessWidget {
   Route _createRoute() {
     return PageRouteBuilder<Null>(
       pageBuilder: (context, animation, secondaryAnimation) =>
-          const LoginScreen(),
+          const LoginScreen(isBackAllowed: true),
       transitionDuration: const Duration(seconds: 1),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);

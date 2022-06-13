@@ -12,7 +12,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({Key? key, this.isBackAllowed = false}) : super(key: key);
+
+  final bool isBackAllowed;
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -104,6 +106,24 @@ class _LoginScreenState extends State<LoginScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(flex: 1),
+                if (widget.isBackAllowed)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+                        icon: Icon(
+                          Icons.arrow_back_rounded,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          size: 25,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
                 Hero(
                   tag: 'PhoneVerification',
                   child: Text(

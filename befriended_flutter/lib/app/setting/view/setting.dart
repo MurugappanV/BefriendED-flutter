@@ -459,7 +459,7 @@ class SettingsPage extends StatelessWidget {
   Route _createRoute() {
     return PageRouteBuilder<Null>(
       pageBuilder: (context, animation, secondaryAnimation) =>
-          const LoginScreen(),
+          const LoginScreen(isBackAllowed: true),
       transitionDuration: const Duration(seconds: 1),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);

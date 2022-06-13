@@ -20,6 +20,7 @@ import 'package:befriended_flutter/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 // when logged in calll many items to register
 
@@ -89,38 +90,39 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.light,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      // home: const LaunchPage(),
-      initialRoute: '/loading',
-      routes: {
-        '/loading': (context) => const SplashPage(),
-        // When navigating to the "/" route, build the FirstScreen widget.
-        // '/launch': (context) => const LaunchPage(),
-        // // When navigating to the "/second" route, build the SecondScreen widget.
-        // '/login': (context) => const LoginScreen(),
-        // '/otpScreen': (context) => const CounterPage(),
-      },
-      onGenerateRoute: (settings) {
-        // switch (settings.name) {
-        //   case '/namepage':
-        //     return PageTransition<CounterPage>(
-        //       child: const NamePage(),
-        //       type: PageTransitionType.fade,
-        //       settings: settings,
-        //       reverseDuration: const Duration(seconds: 3),
-        //     );
-        //   default:
-        //     return null;
-        // }
-      },
+    return OverlaySupport(
+      child: MaterialApp(
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: ThemeMode.light,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        // home: const LaunchPage(),
+        initialRoute: '/loading',
+        routes: {
+          '/loading': (context) => const SplashPage(),
+          // When navigating to the "/" route, build the FirstScreen widget.
+          // '/launch': (context) => const LaunchPage(),
+          // // When navigating to the "/second" route, build the SecondScreen widget.
+          // '/otpScreen': (context) => const CounterPage(),
+        },
+        onGenerateRoute: (settings) {
+          // switch (settings.name) {
+          //   case '/namepage':
+          //     return PageTransition<CounterPage>(
+          //       child: const NamePage(),
+          //       type: PageTransitionType.fade,
+          //       settings: settings,
+          //       reverseDuration: const Duration(seconds: 3),
+          //     );
+          //   default:
+          //     return null;
+          // }
+        },
+      ),
     );
   }
 }

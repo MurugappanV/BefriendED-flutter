@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
 import 'package:befriended_flutter/app/chat/view/chat.dart';
+import 'package:befriended_flutter/app/constants/RouteConstants.dart';
 import 'package:befriended_flutter/app/home/home.dart';
 import 'package:befriended_flutter/app/home/view/common_menu.dart';
 import 'package:befriended_flutter/app/hometab/view/hometab.dart';
+import 'package:befriended_flutter/app/login/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -104,25 +106,33 @@ class _MyBottomNavigatorState extends State<MyBottomNavigator> {
                 ),
               ],
             ),
-            child: IconButton(
-              icon: Icon(
-                Icons.add_rounded,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              onPressed: () {
-                CupertinoScaffold.showCupertinoModalBottomSheet<String>(
-                  context: context,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) {
-                    return CommonMenu();
-                  },
-                  shadow: BoxShadow(
-                    color: Colors.transparent,
-                    blurRadius: 0,
-                    spreadRadius: 0,
-                    offset: Offset(0, 0),
+            child: BlocBuilder<AppCubit, AppState>(
+              builder: (context, state) {
+                return IconButton(
+                  icon: Icon(
+                    state.isLoggedIn ? Icons.add_rounded : Icons.login_rounded,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                  // duration: Duration(milliseconds: 500),
+                  onPressed: () {
+                    if (state.isLoggedIn) {
+                      CupertinoScaffold.showCupertinoModalBottomSheet<String>(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) {
+                          return CommonMenu();
+                        },
+                        shadow: BoxShadow(
+                          color: Colors.transparent,
+                          blurRadius: 0,
+                          spreadRadius: 0,
+                          offset: Offset(0, 0),
+                        ),
+                        // duration: Duration(milliseconds: 500),
+                      );
+                    } else {
+                      Navigator.push<dynamic>(context, _createRoute());
+                    }
+                  },
                 );
               },
             ),
@@ -152,6 +162,28 @@ class _MyBottomNavigatorState extends State<MyBottomNavigator> {
           ),
         ],
       ),
+    );
+  }
+
+  Route _createRoute() {
+    return PageRouteBuilder<Null>(
+      settings: const RouteSettings(name: RouteConstants.login),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const LoginScreen(isBackAllowed: true),
+      transitionDuration: const Duration(seconds: 1),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
     );
   }
 }

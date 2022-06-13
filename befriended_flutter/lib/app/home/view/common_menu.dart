@@ -1,5 +1,7 @@
 import 'package:befriended_flutter/app/buddy_request/buddy_request.dart';
 import 'package:befriended_flutter/app/buddy_request/cubit/cubit.dart';
+import 'package:befriended_flutter/app/chat/view/chat_window.dart';
+import 'package:befriended_flutter/app/constants/RouteConstants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -78,7 +80,9 @@ class _CommonMenuState extends State<CommonMenu> {
             buildMenu(
               text: 'Discuss now',
               iconData: Icons.keyboard_double_arrow_right_rounded,
-              onPress: () {},
+              onPress: () {
+                Navigator.push<dynamic>(context, _createRoute());
+              },
             ),
           ],
         ),
@@ -117,6 +121,28 @@ class _CommonMenuState extends State<CommonMenu> {
           ),
         ],
       ),
+    );
+  }
+
+  Route _createRoute() {
+    return PageRouteBuilder<Null>(
+      settings: const RouteSettings(name: RouteConstants.chat),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const ChatWindowPage(),
+      transitionDuration: const Duration(seconds: 1),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:befriended_flutter/app/forum/screens/forum_screen.dart';
 import 'package:befriended_flutter/app/widget/delay_sizedbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +8,7 @@ class HomeTabPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ForumPage();
     return SizedBox(
       child: ListView.builder(
         itemBuilder: (context, index) {

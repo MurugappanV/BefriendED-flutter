@@ -5,6 +5,7 @@ class RouteConstants {
   static const login = 'login';
   static const otp = 'otp';
   static const home = 'home';
+  static const chat = 'chat';
   // static const chattingWith = 'chattingWith';
   // static const idFrom = 'idFrom';
   // static const idTo = 'idTo';

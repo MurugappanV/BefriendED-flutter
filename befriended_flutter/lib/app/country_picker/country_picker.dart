@@ -35,7 +35,7 @@ class _CountryPickerState extends State<CountryPicker> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance?.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       DefaultAssetBundle.of(context)
           .loadString('assets/countrycodes.json')
           .then(

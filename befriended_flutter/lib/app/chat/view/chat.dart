@@ -323,7 +323,7 @@ class ChatPage extends StatelessWidget {
     return PageRouteBuilder<Null>(
       settings: const RouteSettings(name: RouteConstants.login),
       pageBuilder: (context, animation, secondaryAnimation) =>
-          const LoginScreen(),
+          const LoginScreen(isBackAllowed: true),
       transitionDuration: const Duration(seconds: 1),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);

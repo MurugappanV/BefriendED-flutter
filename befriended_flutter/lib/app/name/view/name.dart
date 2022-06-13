@@ -120,15 +120,18 @@ class NamePage extends StatelessWidget {
               FadeUpAnimation(
                 delay: 800,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 30),
+                  padding: const EdgeInsets.only(top: 25),
                   child: GestureDetector(
                     onTap: () {
                       Navigator.push<dynamic>(context, _createRoute());
                     },
-                    child: Text(
-                      'Already have a account? click here',
-                      style: Theme.of(context).textTheme.displaySmall,
-                      textAlign: TextAlign.center,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 5, bottom: 5),
+                      child: Text(
+                        'Already have a account? click here',
+                        style: Theme.of(context).textTheme.displaySmall,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),
@@ -148,7 +151,7 @@ class NamePage extends StatelessWidget {
     return PageRouteBuilder<Null>(
       settings: const RouteSettings(name: RouteConstants.login),
       pageBuilder: (context, animation, secondaryAnimation) =>
-          const LoginScreen(),
+          const LoginScreen(isBackAllowed: true),
       transitionDuration: const Duration(seconds: 1),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);

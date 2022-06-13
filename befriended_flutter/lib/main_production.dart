@@ -9,11 +9,12 @@ import 'package:befriended_flutter/bootstrap.dart';
 import 'package:befriended_flutter/firebase_options.dart';
 import 'package:befriended_flutter/local_storage/local_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_services_binding/flutter_services_binding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
-  FlutterServicesBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

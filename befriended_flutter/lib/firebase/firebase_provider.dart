@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:befriended_flutter/app/app_cubit/app_cubit.dart';
 import 'package:befriended_flutter/app/availability_schedule/cubit/timezone.dart';
@@ -10,6 +11,8 @@ import 'package:befriended_flutter/firebase/firestore_constants.dart';
 import 'package:befriended_flutter/models/user_chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 import 'package:flutter/material.dart';
@@ -28,6 +31,8 @@ class FirebaseProvider with ChangeNotifier {
   String? verificationId;
   ConfirmationResult? confirmationResult;
   final _firebaseFirestore = FirebaseFirestore.instance;
+  final _realtimeDatabase = FirebaseDatabase.instance;
+  final _storage = FirebaseStorage.instance;
 
   bool isLoggedIn() {
     return _firebaseAuth.currentUser?.uid != null;
@@ -176,8 +181,8 @@ class FirebaseProvider with ChangeNotifier {
       // Write data to local storage
       // User? currentUser = user;
       // await prefs.setString(FirestoreConstants.id, currentUser.uid);
-      // await prefs.setString(FirestoreConstants.nickname, currentUser.displayName ?? "");
-      // await prefs.setString(FirestoreConstants.photoUrl, currentUser.photoURL ?? "");
+      // await prefs.setString(FirestoreConstants.nickname, currentUser.displayName ?? '');
+      // await prefs.setString(FirestoreConstants.photoUrl, currentUser.photoURL ?? '');
     } else {
       // Already sign up, just get data from firestore
       // DocumentSnapshot documentSnapshot = documents[0];
@@ -381,6 +386,74 @@ class FirebaseProvider with ChangeNotifier {
       }
     }
     return null;
+  }
+
+  Future<void> sendQuickMessage(dynamic message) async {
+    final userId = getCurrentUserId();
+    if (userId != null) {
+      await sendQuickMessageUserId(userId, message);
+    }
+  }
+
+  Future<void> sendQuickMessageUserId(String userId, dynamic message) async {
+    final ref = _realtimeDatabase.ref('quickchat/$userId');
+    final itemRef = ref.push();
+    await itemRef.set(json.encode(message));
+  }
+
+  Future<void> requestQuickMessageMatch(dynamic message) async {
+    final userId = getCurrentUserId();
+    if (userId != null) {
+      final ref = _realtimeDatabase.ref('quickchatrequest/$userId');
+      await ref.set({'match': ''});
+      sendQuickMessageUserId(userId, message);
+    }
+  }
+
+  Future<void> stopQuickMessage(dynamic message) async {
+    final userId = getCurrentUserId();
+    if (userId != null) {
+      final ref = _realtimeDatabase.ref('quickchatrequest/$userId');
+      await ref.set({'match': ''});
+      sendQuickMessageUserId(userId, message);
+    }
+  }
+
+  Future<String> uploadImage(String path) async {
+    final reference = _storage.ref().child("images/");
+    final file = File(path);
+    //Upload the file to firebase
+    await reference.putFile(file);
+
+    // Waits till the file is uploaded then stores the download url
+    final result = await reference.getDownloadURL();
+    return result;
+  }
+
+  DatabaseReference? getQuickChatMessages() {
+    final userId = getCurrentUserId();
+    if (userId != null) {
+      return FirebaseDatabase.instance.ref('quickchat/$userId');
+    }
+  }
+
+  DatabaseReference? getQuickChatMatch() {
+    final userId = getCurrentUserId();
+    if (userId != null) {
+      return FirebaseDatabase.instance.ref('quickchatrequest/$userId/match');
+    }
+  }
+
+  Future<void> updatePresence(bool isOnline) async {
+    final userId = getCurrentUserId();
+    if (userId != null) {
+      final ref = _realtimeDatabase.ref('presence/$userId');
+      await ref.set({'isOnline': isOnline});
+    }
+  }
+
+  DatabaseReference? getPresence(String userId) {
+    return FirebaseDatabase.instance.ref('presence/$userId');
   }
 }
 

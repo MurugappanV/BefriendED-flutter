@@ -34,7 +34,7 @@ class _AvailabilityScheduleState extends State<AvailabilitySchedule> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance?.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       DefaultAssetBundle.of(context).loadString('assets/timezones.json').then(
             (value) =>
                 context.read<AvialabiliyScheduleCubit>().getTimezoneList(value),
